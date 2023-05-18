@@ -1,5 +1,6 @@
 package com.example.assignment.controller;
 
+import com.example.assignment.dto.SignupDto;
 import com.example.assignment.model.User;
 import com.example.assignment.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping("/auth")
 public class UserController {
 
     @Autowired
@@ -21,11 +24,16 @@ public class UserController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/signup")
-    public void signUp(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    public void signUp(@RequestBody SignupDto signupDto) {
+        signupDto.setPassword(bCryptPasswordEncoder.encode(signupDto.getPassword()));
+        User user = new User();
+
+        user.setFirstName(signupDto.getFirstname());
+        user.setLastName(signupDto.getLastname());
+        user.setPassword(bCryptPasswordEncoder.encode(signupDto.getPassword()));
+        user.setEmail(signupDto.getEmail());
         usersRepository.save(user);
     }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         User existingUser = usersRepository.findByUsername(user.getUsername());
