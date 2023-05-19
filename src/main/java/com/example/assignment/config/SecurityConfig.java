@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(), (Class<? extends javax.servlet.Filter>) UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -57,6 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public Filter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        return new JwtAuthenticationFilter(authenticationManager);
     }
 }
